@@ -39,18 +39,18 @@ disp("Doping conc. on each side is: "+ DeltaDop + " cm^-3")
 
 %Multiply desired potential by -1
 %For some reason this program takes the opposite sign of potential passed
-Pot = Pot*-1
+Pot = Pot*-1;
 
 
 
 %How large are the arrays passed through for Field and Potential arguments?
-l_F = length(Field)
-l_P = length(Pot)
+l_F = length(Field);
+l_P = length(Pot);
 
 
 %Keep record of the field and potential boundary conditions passed
-Data.Bound_CondF = Field
-Data.Bound_condP = Pot  
+Data.Bound_CondF = Field;
+Data.Bound_condP = Pot;  
 
 for i = 1:l_F
 
@@ -117,13 +117,13 @@ for i = 1:l_F
         
         %Calculate if subband energy is above fermi energy
         if (aquila_subbands.ge(1).E(1) - aquila_control.Efermi) < 0
-            Data.Sub1.Occ(i,j) = 1 
+            Data.Sub1.Occ(i,j) = 1; 
         end
         if (aquila_subbands.ge(1).E(2) - aquila_control.Efermi) < 0
-            Data.Sub2.Occ(i,j) = 1
+            Data.Sub2.Occ(i,j) = 1;
         end
         if (aquila_subbands.ge(1).E(3) - aquila_control.Efermi) < 0
-            Data.Sub3.Occ(i,j) = 1 
+            Data.Sub3.Occ(i,j) = 1; 
         end
         
         
@@ -137,8 +137,8 @@ for i = 1:l_F
         Data.Sub2.Conc(i,j) = sum(ch.*aquila_subbands.structure(1).boxvol)*1e16; %integrate to get the sheet density
 
         % What is the potential of the bottom gate?
-        Data.Vbot(i,j) = (aquila_material.ec(end)-phi(end))
+        Data.Vbot(i,j) = (aquila_material.ec(end)-phi(end));
+        Data.Vtop(i,j) = Pot(j);
     end
 end
-disp('Yup, u got it')
 end

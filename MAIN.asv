@@ -24,12 +24,9 @@ Occupancy = subband_occ(:);
 
 colormap cool; %Make the plot look nice:
 %3 subbands occupied = ?
-%2 subbands occupied = Pink 
-%1 subbands occupied = Purple
-%0 subbands occupied = Light Blue
 
 scatter(Vbot, Vtop, [], occupancy, 'filled')
-xlabel("V_b_o_t")
-ylabel("V_t_o_p")
+xlabel("V_(bot)")
+ylabel("V_(top)")
 title("Delta Doping: " + Dopant)
 
