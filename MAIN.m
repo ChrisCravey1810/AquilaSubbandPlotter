@@ -1,10 +1,30 @@
 clear all
 
 %Please manually insert desired parameters
-Pot = [0, -0.02, -0.05, -0.07, -0.1, -0.12, -0.15, -0.18, -0.2] % array in eV
-%Field = [20000, 15000, 10000, 5000, 1000, 0, -100000, -200000] % array in V/cm
-Field = [15000, 13000, 11000, 9000, 7000, 5000]
-Dopant = -2E11   % Single value in cm^-2. This dopant conc is applied to both sides
+
+
+Dopant = -2.5E11   % Single value in cm^-2. This dopant conc is applied to both sides
+Pot = [0.25, 0.20, 0.15, 0.10, 0.05, 0, -0.05, -0.10, -0.15, -0.20, -0.25] % array in eV
+Field = [15000, 13500, 11500, 10000, 8500, 6500, 5000] % array in V/cm
+
+%GLOBAL SETTINGS
+%Field = [20000, 15000, 10000, 5000, 1000, 0, -100000, -200000] 
+%Pot = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
+
+
+%2E11 ZOOM SETTINGS
+%Field = [ 7000, 5000, 2000, 0, -10000, -50000] %2E11 zoom
+%Pot = [ 7000, 5000, 3500, 2000, 0, -50000, -100000]
+
+
+%2.5E11 ZOOM SETTINGS
+%Pot = [0.25, 0.20, 0.15, 0.10, 0.05, 0, -0.05, -0.10, -0.15, -0.20, -0.25] % array in eV
+%Field = [15000, 13500, 11500, 10000, 8500, 6500, 5000] % array in V/cm
+
+
+%3E11 ZOOM SETTINGS
+%Pot = [0.6, 0.55, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0] % array in eV
+%Field = [20000, 18500, 16500, 15000, 13500, 11500, 10000] % array in V/cm
 
 
 %Please insert desired filenames for output graphs to be saved under
@@ -70,5 +90,6 @@ title("Delta Doping: " + D)
 saveas(gcf, filename2)
 
 
-%Overlay contour over subband occupancy
+%TO DO: Overlay contour over subband occupancy
+%Fix x and y axis of all plots to easily overlap each other
 %Look into "Hold on" function
