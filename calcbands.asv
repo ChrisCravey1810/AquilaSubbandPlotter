@@ -88,7 +88,7 @@ for i = 1:l_F
         
         add_boundary(LEFT,POTENTIAL, Pot(j));  %Set top gate potential
         %add_boundary(RIGHT, POTENTIAL, 1)
-        add_boundary(RIGHT,FIELD, Field(i));   %Set E field at bottom gate (V/A)
+        add_boundary(RIGHT,FIELD, Field(i));   %Set derivative of bottom gate potential
         
         add_pbox([3150 3850],CB);
         add_pbox([0 14700],CB);
@@ -150,7 +150,7 @@ for i = 1:l_F
 
         % What is the potential of the top and bottom gate?
         Data.Vbot(i,j) = (aquila_material.ec(end)-phi(end));
-        Data.Vtop(i,j) = (aquila_material.ec(1)-phi(1));
+        Data.Vtop(i,j) = Pot(j);
 
 
         % What is the effective E field at the edges of our material?
