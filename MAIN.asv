@@ -60,6 +60,7 @@ colormap cool; %Make the plot look nice:
 %1 subbands occupied = Purple
 %0 subbands occupied = Light Blue
 
+subband_occ = subband_occ*2
 
 %Plot subbands occupancy
 %Spread the matrix data into vectors so they may be plotted easily
@@ -72,20 +73,16 @@ D = sprintf('%5.3G', Dopant);  %Express doping conc. in scientific notation
                       
 title("Delta Doping: " + D)
 
-
-%Create some invisable points to easily make 
+%Create some invisable points to create 
 %a constant legend for the scatter plot
 hold on
 h=gobjects(3,1);
-h(1)=scatter(nan,nan, [], 0,'filled');
-h(2)=scatter(nan,nan,[], 1,'filled');
-h(3)=scatter(nan,nan,[], 2,'filled');
-legend(h, ["0" "1" "2"])
-lgd = legend;
-lgd.Title.String = "# of Occupied Subbands";
-hold off
-
+h(1)=scatter(nan,nan, 0,'filled');
+h(2)=scatter(nan,nan,'g','filled');
+h(3)=scatter(nan,nan,'b','filled');
+legend(h, ["Red" "Green" "Blue"])
 %saveas(gcf, filename1)
+
 
 
 

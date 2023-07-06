@@ -167,6 +167,7 @@ for i = 1:l_F
 
         %Record how close the E field at edges of the device get to the
         %breakdown E field for GaAs
+        
         Data.Breakdown (i,j) = max([abs(Data.Etop(i,j)/4e5) , abs(Data.Ebot(i,j)/4e5)]);
         %Records the % of breakdown E field reached for run i,j
 
