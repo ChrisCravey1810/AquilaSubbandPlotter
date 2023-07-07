@@ -40,11 +40,11 @@ DeltaDop = (DeltaDop/100)/(2E-10);  %/100 to convert to m, divide by 2 A
                                     % because the doping layer is 2A wide
 disp("Doping conc. on each side is: "+ DeltaDop + " cm^-3")
 
-
+DeltaDop = 
 
 %Multiply desired potential by -1
 %For some reason this program takes the opposite sign of potential passed
-Pot = Pot*-1;
+%Pot = Pot*-1;
 
 
 
@@ -75,7 +75,9 @@ for i = 1:l_F
         add_mbox(2,1,0.328,DeltaDop);          %2 A delta-doped AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs
         add_mbox(800,20,0.328,0);              %800 A AlGaAs spacer
-        add_mbox(650,5,0,0);                   %650 A GaAs quantum well
+        
+        add_mbox(270, 5, 0, 0)
+        %add_mbox(650,5,0,0);                   %650 A GaAs quantum well
         add_mbox(800,20,0.328,0);              %800 A AlGaAs spacer
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs
         add_mbox(2,1,0.328,DeltaDop);           %2 A delta-doped AlGaAs
@@ -87,10 +89,13 @@ for i = 1:l_F
         add_boundary(LEFT,POTENTIAL, Pot(j));  %Set top gate potential
         %add_boundary(RIGHT, POTENTIAL, 1)
         add_boundary(RIGHT,FIELD, Field(i));   %Set E field at bottom gate (V/A)
-        
+      
+
         add_pbox([3150 3850],CB);
-        add_pbox([0 14700],CB);
+        add_pbox([0 14600],CB);
         
+        
+
         runstructure;                          %DO IT
         
         %Plot the Wavefunctions of the bottom 2 bands
@@ -147,8 +152,8 @@ for i = 1:l_F
 
 
         % What is the potential of the top and bottom gate?
-        Data.Vbot(i,j) = (aquila_material.ec(end)-phi(end));
-        Data.Vtop(i,j) = (aquila_material.ec(1)-phi(1));
+        Data.Vbot(i,j) = (-0.71313 - aquila_material.ec(end) + phi(end));
+        Data.Vtop(i,j) = (phi(1) - aquila_material.ec(1));
 
 
         % What is the effective E field at the edges of our material?
@@ -167,7 +172,6 @@ for i = 1:l_F
 
         %Record how close the E field at edges of the device get to the
         %breakdown E field for GaAs
-        
         Data.Breakdown (i,j) = max([abs(Data.Etop(i,j)/4e5) , abs(Data.Ebot(i,j)/4e5)]);
         %Records the % of breakdown E field reached for run i,j
 

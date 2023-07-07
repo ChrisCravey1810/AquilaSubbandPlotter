@@ -4,8 +4,8 @@ clear all
 
 
 Dopant = -2.E11   % Single value in cm^-2. This dopant conc is applied to both sides
-Field = [ 7000, -50000] %2E11 zoom
-Pot = [ 0, -0.2]
+Pot = [ 0, 0.02, 0.05, 0.07, 0.1, 0.12, 0.15, 0.17, 0.2]
+Field = [ 7000, 5000, 2000, 0, -10000, -50000] %2E11 zoom
 
 
 
@@ -102,7 +102,21 @@ xlabel("V_b_o_t")
 ylabel("V_t_o_p")
 xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
-title("Delta Doping: " + D)
+title("Carrier Concentration (cm^-^2)")
+
+
+%Plot line corresponding to subband degeneracy crossover
+%See below for reference line of best fits
+hold on
+plot([-0.83, 0.05], [-0.083, -0.107], "r", "LineWidth", 2)
+hold off
+
+
+%LINE OF SUBBAND CROSSOVER FOR 2E11 Delta Doping
+% X = [-0.83, -0.78, -0.71, -0.6, -0.49, -0.39, -0.28, -0.17, -0.06, 0.05]
+% Y = [-0.087, -0.087, -0.087, -0.087, -0.087, -0.097, -0.097, -0.097,
+% -0.107, -0.107]
+% LINE OF BEST FIT: plot([-0.83, 0.05], [-0.083, -0.107], "r", "LineWidth", 2)
 
 %saveas(gcf, filename2)
 
