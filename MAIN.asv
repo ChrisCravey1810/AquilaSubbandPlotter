@@ -3,9 +3,9 @@ clear all
 %Please manually insert desired parameters
 
 
-Dopant = -2.0E11   % Single value in cm^-2. This dopant conc is applied to both sides
-Field = [20000, 15000, 10000, 5000, 1000, 0, -100000, -200000] 
-Pot = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
+Dopant = -2.E11   % Single value in cm^-2. This dopant conc is applied to both sides
+Pot = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+Field = [ 7000, 6500, 6000, 5500, 5000, 4500, 4000, 3500, 3000, 2500, 2000, 1000, 0, -5000, -10000, -30000, -50000] %2E11 zoom
 
 %Pot = [ 0, 0.02, 0.05, 0.07, 0.1, 0.12, 0.15, 0.17, 0.2] %Potential array at 0A
 %Field = [ 7000, 5000, 2000, 0, -10000, -50000] %E field array at bottom gate in V/cm
@@ -18,8 +18,8 @@ Pot = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
 
 
 %2E11 ZOOM SETTINGS
-%Pot = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-%Field = [ 7000, 6500, 6000, 5500, 5000, 4500, 4000, 3500, 3000, 2500, 2000, 1500, 1000, 500, 0, -1000, -10000, -30000, -50000] %2E11 zoom
+%Pot = [ 0, 0.02, 0.05, 0.07, 0.1, 0.12, 0.15, 0.17, 0.2]
+%Field = [ 7000, 5000, 2000, 0, -10000, -50000] %2E11 zoom
 
 
 %2.5E11 ZOOM SETTINGS
@@ -33,21 +33,17 @@ Pot = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
 
 
 %Please insert desired filenames for output graphs to be saved under
-filename1 = sprintf("%5.3GOccupation.png", abs(Dopant));  %Subband Occupation Graph filename, remove "-" from front
-filename2 = sprintf("%5.3GEqui_Density.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from front
+filename1 = sprintf("%5.3GOccupationZoom.png", abs(Dopant));  %Subband Occupation Graph filename, remove "-" from front
+filename2 = sprintf("%5.3GEqui_DensityZoom.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from front
 
 %Convert field from V/cm to V/A
 Field = Field*(1E-8);
 
 
-%%%%%%%%%%%%%%%%  PERFORM CALCULATIONS  %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%
 Data = calcbands(Dopant, Field, Pot); %Run simulation
-
-%%%Optional: save the final iteration graph which shows conduction band,
-%carrier density, and wavefunctions of lowest 2 subbands
 %filename = ''
 %saveas(gcf, '')
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -70,7 +66,7 @@ colormap cool; %Make the plot look nice:
 %0 subbands occupied = Light Blue
 
 
-%%%%  Plot subbands occupancy  %%%%
+%Plot subbands occupancy
 %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(:), 'filled')
 xlabel("V_b_o_t (V)")
@@ -94,7 +90,7 @@ lgd = legend;
 lgd.Title.String = "# of Occupied Subbands";
 hold off
 
-saveas(gcf, filename1)
+%saveas(gcf, filename1)
 
 
 
@@ -102,7 +98,8 @@ saveas(gcf, filename1)
 tot_carrier_conc = Data.Sub1.Conc + Data.Sub2.Conc + Data.Sub3.Conc;
 
 
-%%%% Plot a color map of electron density in QW as a function of gate voltage  %%%%
+%Plot a color map of electron density in QW as a function of gate voltage
+%TO DO: Add equi-density lines to color plot (Look up 2d contor plot)
 figure
 
 contourf(Data.Vbot, Data.Vtop, tot_carrier_conc, "ShowText", true, "LabelFormat", "%0.3G")
@@ -113,15 +110,15 @@ ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
 title("Carrier Concentration (cm^-^2)")
 
 
-
-%{
 %Plot line corresponding to subband degeneracy crossover
 %See below for reference line of best fits
-
+%{
 hold on
 plot([-0.83, 0.05], [-0.083, -0.107], "r", "LineWidth", 2)
 hold off
 %}
+
+
 
 %LINE OF SUBBAND CROSSOVER FOR 2E11 Delta Doping
 % X = [-0.83, -0.78, -0.71, -0.6, -0.49, -0.39, -0.28, -0.17, -0.06, 0.05]
@@ -129,7 +126,7 @@ hold off
 % -0.107, -0.107]
 % LINE OF BEST FIT: plot([-0.83, 0.05], [-0.083, -0.107], "r", "LineWidth", 2)
 
-saveas(gcf, filename2)
+%saveas(gcf, filename2)
 
 
 %TO DO: Overlay contour over subband occupancy
