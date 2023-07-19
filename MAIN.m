@@ -3,9 +3,11 @@ clear all
 %Please manually insert desired parameters
 
 
-Dopant = -2.0E11   % Single value in cm^-2. This dopant conc is applied to both sides
-Field = [20000, 15000, 10000, 5000, 1000, 0, -100000, -200000] 
-Pot = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
+Dopant = -4.4E11   % Single value in cm^-2. This dopant conc is applied to both sides
+%Field = [0] 
+Field = linspace(-2.5, 2.5, 11)
+%Pot = linspace(-0.3, 0.7, 11)
+Pot = [0]
 
 %Pot = [ 0, 0.02, 0.05, 0.07, 0.1, 0.12, 0.15, 0.17, 0.2] %Potential array at 0A
 %Field = [ 7000, 5000, 2000, 0, -10000, -50000] %E field array at bottom gate in V/cm
@@ -37,7 +39,7 @@ filename1 = sprintf("%5.3GOccupation.png", abs(Dopant));  %Subband Occupation Gr
 filename2 = sprintf("%5.3GEqui_Density.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from front
 
 %Convert field from V/cm to V/A
-Field = Field*(1E-8);
+%Field = Field*(1E-8);
 
 
 %%%%%%%%%%%%%%%%  PERFORM CALCULATIONS  %%%%%%%%%%%%%%%%%%%%%
@@ -70,6 +72,7 @@ colormap cool; %Make the plot look nice:
 %0 subbands occupied = Light Blue
 
 
+%{
 %%%%  Plot subbands occupancy  %%%%
 %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(:), 'filled')
@@ -93,25 +96,41 @@ legend(h, ["0" "1" "2"])
 lgd = legend;
 lgd.Title.String = "# of Occupied Subbands";
 hold off
+%}
 
-saveas(gcf, filename1)
-
-
-
-%Calculate total carrier concentration inside the QW
-tot_carrier_conc = Data.Sub1.Conc + Data.Sub2.Conc + Data.Sub3.Conc;
+%saveas(gcf, filename1)
 
 
+
+
+%{
 %%%% Plot a color map of electron density in QW as a function of gate voltage  %%%%
 figure
 
-contourf(Data.Vbot, Data.Vtop, tot_carrier_conc, "ShowText", true, "LabelFormat", "%0.3G")
+contourf(Data.Vbot, Data.Vtop, Data.Well.Conc, "ShowText", true, "LabelFormat", "%0.3G")
 xlabel("V_b_o_t (V)")
 ylabel("V_t_o_p (V)")
 xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
 title("Carrier Concentration (cm^-^2)")
+%}
 
+%{
+scatter(Data.Vtop, Data.Well.Conc, "filled")
+xlabel("V_t_o_p (V)")
+ylabel("n (cm^-2)")
+%xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
+%ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
+title("Carrier Concentration VS Top Gate Bias")
+%}
+
+
+scatter(Data.Vbot, Data.Well.Conc, "filled")
+xlabel("V_b_o_t (V)")
+ylabel("n (cm^-2)")
+%xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
+%ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
+title("Carrier Concentration VS Bottom Gate Bias")
 
 
 %{
@@ -129,7 +148,7 @@ hold off
 % -0.107, -0.107]
 % LINE OF BEST FIT: plot([-0.83, 0.05], [-0.083, -0.107], "r", "LineWidth", 2)
 
-saveas(gcf, filename2)
+%saveas(gcf, filename2)
 
 
 %TO DO: Overlay contour over subband occupancy
