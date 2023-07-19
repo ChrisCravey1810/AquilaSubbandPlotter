@@ -107,11 +107,14 @@ for i = 1:l_F
         add_mbox(2,1,0.328, DeltaDop/2.6);          %2 A delta-doped AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
         add_mbox(9700,100,0.328,0);            %9700 A AlGaAs
-        add_mbox(300, 50, 0, 0)                %300A GaAs cap (for ETH comparison)
-        add_mbox(800, 10, 0.0, -7.5E17)        %bulk doped back gate
-        add_mbox(300, 50, 0, 0)                %300A GaAs cap (for ETH comparison)
+        add_mbox(300, 50, 0, 0);                %300A GaAs cap (for ETH comparison)
+        add_mbox(800, 10, 0.0, -7.5E17);        %bulk doped back gate
+        add_mbox(300, 50, 0, 0);                %300A GaAs cap (for ETH comparison)
         
-        add_bias([13600 40000], Field(i))
+
+        add_bias([300, 2800], 4);               %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([3200 , 13600], 4);            %Make fermi energy between QW and bottom gate pinned to mid gap
+        add_bias([13600 40000], Field(i));       %Add desired voltage to bottom gate
         add_qbox([2900 3180],5,3,GE + XE + LE);          %set quantum box onto quantum well
         add_pbox([2900 3180],CB);              %Graph charge density in well
         add_pbox([0 20000],CB);                %Graph charge density throughout structure

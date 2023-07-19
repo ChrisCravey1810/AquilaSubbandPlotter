@@ -45,6 +45,7 @@ filename2 = sprintf("%5.3GEqui_Density.png", abs(Dopant)); %Equi-Electron Densit
 %%%%%%%%%%%%%%%%  PERFORM CALCULATIONS  %%%%%%%%%%%%%%%%%%%%%
 Data = calcbands(Dopant, Field, Pot); %Run simulation
 
+
 %%%Optional: save the final iteration graph which shows conduction band,
 %carrier density, and wavefunctions of lowest 2 subbands
 %filename = ''
