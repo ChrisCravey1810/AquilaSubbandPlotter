@@ -68,8 +68,8 @@ for i = 1:l_F
 
         %%%Prof. Grayson Structure Degeneracy Cooler Structure%%% 
 
-%{        
-        add_mbox(1000,20,0,0);                 %1020 A GaAs Cap
+        
+        add_mbox(1000,20,0,0);                 %1000 A GaAs Cap
         add_mbox(1350,50,0.328,0);             %1350 A AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
         add_mbox(2,1,0.328,DeltaDop);          %2 A delta-doped AlGaAs
@@ -78,21 +78,28 @@ for i = 1:l_F
         
         add_mbox(650,5,0,0);                   %650 A GaAs quantum well
 
-        add_mbox(800,20,0.328,0);              %800 A AlGaAs spacer
-        add_mbox(2,1,0.328,0);                 %2 A AlGaAs
-        add_mbox(2,1,0.328,DeltaDop);           %2 A delta-doped AlGaAs
-        add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
-        add_mbox(10000,100,0.328,0);           %10000 A AlGaAs
+        add_mbox(800,20,0.328,0);               %800 A AlGaAs spacer
+        add_mbox(2,1,0.328,0);                  %2 A AlGaAs
+        add_mbox(2,1,0.328, DeltaDop);          %2 A delta-doped AlGaAs
+        add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
+        add_mbox(9700,100,0.328,0);             %9700 A AlGaAs
+        add_mbox(300, 50, 0, 0);                %300A GaAs cap 
+        add_mbox(800, 10, 0.0, -7.5E17);        %bulk doped back gate
+        add_mbox(300, 50, 0, 0);                %300A GaAs cap 
 
         
-        add_qbox([3175 3850],5,3, GE);          %set quantum box onto quantum well
-        add_pbox([3175 3850],CB);              %Graph charge density in well
-        add_pbox([0 14600],CB);                %Graph charge density throughout structure
-%}
+        add_bias([500, 3000], 3);               %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([4000, 14000], 3);             %Make fermi energy between bottom gate and QW pinned to mid gap
+        add_bias([14000, 16000], Field(i));
+        add_qbox([3100 3850],5,3, GE +XE + LE);          %set quantum box onto quantum well
+        add_pbox([3100 3850],CB);              %Graph charge density in well
+        add_pbox([0 15600],CB);                %Graph charge density throughout structure
+
 
 
 
         %%%%% ETH Bottom Gate Experimental Comparison Structure %%%%%%%%
+%{        
         add_mbox(100,50,0.0,0);                %100 A GaAs
         add_mbox(2000,10,0.328,0);             %2000 A AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
@@ -119,7 +126,7 @@ for i = 1:l_F
         add_pbox([2900 3180],CB);              %Graph charge density in well
         add_pbox([0 20000],CB);                %Graph charge density throughout structure
 
-
+%}
 
 
         %%%%%%% ETH TOP GATE COMPARISON STRUCTURE %%%%%%%%%
