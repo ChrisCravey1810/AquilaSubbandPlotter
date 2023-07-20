@@ -1,5 +1,5 @@
-function Data = calcbands(DeltaDop, Field, Pot)
-% Calculate which subbands are occupied for varied of boundary conditions
+function Data = calcbands(DeltaDop, BackGate, FrontGate)
+% Calculate which subbands are occupied for variety of boundary conditions
 % Quantum well structure is hard coded into this function, must manually
 % change any structure properties by altering this code, but the passable
 % arguments are as follows:
@@ -9,29 +9,33 @@ function Data = calcbands(DeltaDop, Field, Pot)
 %      note that the resulting doping will be X2, as this doping conc. is
 %      applied to both sides.
 %      DeltaDop < 0 is n-type doping
-%   Field is the desired E field boundary condition at the bulk end of the
-%      device (right side). This will eventually be converted into a 
-%      bottom gate potential to simply graph the subband occupancy as a 
-%      function of both gate voltages
-%   Pot (TOP GATE VOLTAGE) is the desired Potential boundary condition at 
-%      the surface of the device (left side)
+%   BackGate is the desired potential bias (V) that the doped back gate
+%       (right side of conduction band graph) will be biased by. The fermi 
+%       energy in the back gate region will be manually offset by each value.
+%   FrontGate is the desired potential bias (V) that the metal front gate
+%       will be biased by (left side of the device, the actual metal gate is
+%       not simulated, but the resulting shift in the conduction band at the
+%       device's edge is). The value of the conduction band with respect to the
+%       fermi energy will be manually offset by each value
+%      
 %
 %
 %RETURNS: Data
-%   Data.Bound_CondF(Data.Bound_CondP): The passed field or potential
-%           boundary conditions repectively
-%   Data.Well.Conc: Carrier sheet density inside the QW in cm^-2
+%   Data.Bound_CondBG(Data.Bound_CondFG): Records the inputed back and
+%           front gate voltages respectively
+%   Data.WellConc: Carrier sheet density inside the QW in cm^-2
 %   Data.Subx.Occ: [i,j] matrix. If 0, the x band is NOT occupied under the
-%           boundary conditions Field(i) and Pot(j)
+%           boundary conditions BackGate(i) and FrontGate(j)
 %   Data.Subx.Conc: [i,j] matrix. The carrier concentration occupying the
-%           x subband at Field(i) and Pot(j)
+%           x subband at BackGate(i) and FrontGate(j)
 %   Data.Vtop / Data.Vbot: [i,j] matrix. Calculated top and bottom gate
-%           potentials for Field(i) and Pot(j)
+%           potentials for BackGate(i) and FrontGate(j)
 %   Data.Etop / Data.Ebot: [i,j] matrix. Calculated E field next to the top
-%           and bottom gate for Field(i) and Pot(j)
-%   Data.Breakdown: [i,j] matrix. Records how close the E field at the
-%           edges of the device get to the breakdown E field of GaAs
-%           (4e5V/cm)
+%           and bottom gate for BackGate(i) and FrontGate(j)
+%   Data.Breakdown: [i,j] matrix. Records the maximum ratio of the E field at the
+%           edges of the device to the breakdown E field of GaAs
+%           (4E5V/cm). A value > 1 implies the E field in the device
+%           exceeds the breakdown field.
 
 
 
@@ -42,41 +46,37 @@ disp("Doping conc. on each side is: "+ DeltaDop + " cm^-3")
 
 
 
-%Multiply desired potential by -1
-%For some reason this program takes the opposite sign of potential passed
-%Pot = Pot*-1;
+
+%How large are the arrays passed through for BackGate and FrontGate arguments?
+l_BG = length(BackGate);
+l_FG = length(FrontGate);
 
 
+%Keep record of the Front gate and Back Gate conditions passed
+Data.Bound_CondBG = BackGate;
+Data.Bound_condFG = FrontGate;  
 
-%How large are the arrays passed through for Field and Potential arguments?
-l_F = length(Field);
-l_P = length(Pot);
+for i = 1:l_BG
 
-
-%Keep record of the field and potential boundary conditions passed
-Data.Bound_CondF = Field;
-Data.Bound_condP = Pot;  
-
-for i = 1:l_F
-
-    for j = 1:l_P
+    for j = 1:l_FG
 
         initaquila                             %initialize
         aquila_control.mode=1;                 %1D-Simulation
         aquila_control.fix_doping=0;           %use doping levels instead of treating the doping
                                                %as a space charge
 
-        %%%Prof. Grayson Structure Degeneracy Cooler Structure%%% 
+
+        %%%%%Prof. Grayson Degeneracy Cooler Structure%%%%%%% 
 
         
-        add_mbox(1000,20,0,0);                 %1000 A GaAs Cap
-        add_mbox(1350,50,0.328,0);             %1350 A AlGaAs
-        add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
-        add_mbox(2,1,0.328,DeltaDop);          %2 A delta-doped AlGaAs
-        add_mbox(2,1,0.328,0);                 %2 A AlGaAs
-        add_mbox(800,20,0.328,0);              %800 A AlGaAs spacer
+        add_mbox(1000,20,0,0);                  %1000 A GaAs Cap
+        add_mbox(1350,50,0.328,0);              %1350 A AlGaAs
+        add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
+        add_mbox(2,1,0.328,DeltaDop);           %2 A delta-doped AlGaAs
+        add_mbox(2,1,0.328,0);                  %2 A AlGaAs
+        add_mbox(800,20,0.328,0);               %800 A AlGaAs spacer
         
-        add_mbox(650,5,0,0);                   %650 A GaAs quantum well
+        add_mbox(650,5,0,0);                    %650 A GaAs quantum well
 
         add_mbox(800,20,0.328,0);               %800 A AlGaAs spacer
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs
@@ -88,13 +88,15 @@ for i = 1:l_F
         add_mbox(300, 50, 0, 0);                %300A GaAs cap 
 
         
-        add_bias([500, 3000], 3);               %Make fermi energy between top gate and QW pinned to mid gap
-        add_bias([4000, 14000], 3);             %Make fermi energy between bottom gate and QW pinned to mid gap
-        add_bias([14000, 16000], Field(i));
-        add_qbox([3100 3850],5,3, GE +XE + LE);          %set quantum box onto quantum well
-        add_pbox([3100 3850],CB);              %Graph charge density in well
-        add_pbox([0 15600],CB);                %Graph charge density throughout structure
+        add_bias([500, 3000], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([4000, 14000], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
+        add_qbox([3100 3850],5,3, GE +XE + LE);      %set quantum box onto quantum well
+        add_pbox([3100 3850],CB);                    %Graph charge density in well
+        add_pbox([0 15600],CB);                      %Graph charge density throughout structure
 
+        add_bias([14000, 16000], BackGate(i));       %Set bottom gate potential
+        add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
+        add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
 
 
 
@@ -121,11 +123,14 @@ for i = 1:l_F
 
         add_bias([300, 2800], 4);               %Make fermi energy between top gate and QW pinned to mid gap
         add_bias([3200 , 13600], 4);            %Make fermi energy between QW and bottom gate pinned to mid gap
-        add_bias([13600 40000], Field(i));       %Add desired voltage to bottom gate
+        add_bias([13600 40000], BackGate(i));       %Add desired voltage to bottom gate
         add_qbox([2900 3180],5,3,GE + XE + LE);          %set quantum box onto quantum well
         add_pbox([2900 3180],CB);              %Graph charge density in well
         add_pbox([0 20000],CB);                %Graph charge density throughout structure
 
+
+        add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
+        add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
 %}
 
 
@@ -150,19 +155,15 @@ for i = 1:l_F
         add_qbox([1490 1790], 5, 3,GE + XE + LE);          %set quantum box onto quantum well
         add_pbox([1490 1790],CB);              %Graph charge density in well
         add_pbox([0 13000],CB);                %Graph charge density throughout structure
+
+
+        add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
+        add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
 %}
 
-
-
-        add_boundary(LEFT,POTENTIAL, Pot(j));  %Set top gate potential
-        %add_boundary(RIGHT, POTENTIAL, 1)
-        %add_boundary(RIGHT,FIELD, Field(i));   %Set E field at bottom gate (V/A)
-        add_boundary(RIGHT, FIELD, 0);
-
-        
         
 
-        runstructure;                          %DO IT
+        runstructure;                          %%%%Perform Simulation%%%%%
         
 
 
@@ -230,7 +231,7 @@ for i = 1:l_F
 
         
         %Calculate total carrier density in QW
-        Data.Well.Conc(i,j) = Data.Sub1.Conc(i,j) + Data.Sub2.Conc(i,j) + Data.Sub3.Conc(i,j)
+        Data.WellConc(i,j) = Data.Sub1.Conc(i,j) + Data.Sub2.Conc(i,j) + Data.Sub3.Conc(i,j);
 
 
         % What is the potential of the top and bottom gate?
@@ -246,9 +247,9 @@ for i = 1:l_F
             aquila_material.ec(1) + phi(1))/(aquila_structure.xpos(2) ...
             - aquila_structure.xpos(1)))*(-1.0e8);
                       % Mulitply by 1.0e8 to convert from V/A to V/cm
-        Data.Ebot(i,j) = ((aquila_material.ec(end) - phi(end) - ...
-            aquila_material.ec(end-1) + phi(end-1))/(aquila_structure.xpos(end) ...
-            - aquila_structure.xpos(end - 1)))*(-1.0e8);
+        Data.Ebot(i,j) = ((aquila_material.ec(end-100) - phi(end-100) - ...
+            aquila_material.ec(end-101) + phi(end-101))/(aquila_structure.xpos(end - 100) ...
+            - aquila_structure.xpos(end - 101)))*(-1.0e8);
                       % Mulitply by 1.0e8 to convert from V/A to V/cm
         
 
@@ -259,14 +260,6 @@ for i = 1:l_F
         %Records the % of breakdown E field reached for run i,j
 
 
-
-        %{
-        if abs(Data.Ebot(i,j)) > 4.0e5 || abs(Data.Etop(i,j)) > 4.0e5
-            Data.Breakdown(i,j) = 1;
-        else
-            Data.Breakdown(i,j) = 0;
-        end
-        %}
         
 
     end

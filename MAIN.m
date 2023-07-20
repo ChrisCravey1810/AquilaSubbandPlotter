@@ -1,61 +1,59 @@
 clear all
 
-%Please manually insert desired parameters
+%%%Please manually define desired parameters%%%
+%Dopant: Delta doping amount in cm^-2 (double)
+%FrontGate: Front gate values to be iterated over (array)
+%BackGate: Back gate values to be iterated over (array)
 
+Dopant = -2E11 
+FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
-Dopant = -2E11   % Single value in cm^-2. This dopant conc is applied to both sides
-Pot = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-Field = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
-
-
-%Pot = [ 0, 0.02, 0.05, 0.07, 0.1, 0.12, 0.15, 0.17, 0.2] %Potential array at 0A
-%Field = [ 7000, 5000, 2000, 0, -10000, -50000] %E field array at bottom gate in V/cm
 
 
 
 %GLOBAL SETTINGS
-%Field = [2, 1.75, 1.5, 1.25, 1.0, 0.75, 0.50, 0.25, 0, -0.25, -0.5, -0.75, -1, -1.25, -1.5, -1.75, -2] 
-%Pot = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
+%BackGate = [2, 1.75, 1.5, 1.25, 1.0, 0.75, 0.50, 0.25, 0, -0.25, -0.5, -0.75, -1, -1.25, -1.5, -1.75, -2] 
+%FrontGate = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
 
 
 %2E11 ZOOM SETTINGS
-%Pot = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-%Field = [ -0.02, 0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
+%FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+%BackGate = [ -0.02, 0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
 
 %2.5E11 ZOOM SETTINGS
-%Pot = [-0.25, -0.20, -0.15, -0.10, -0.05, 0, 0.05, 0.10, 0.15, 0.20, 0.25] % array in eV
-%Field = [15000, 13500, 11500, 10000, 8500, 6500, 5000] % array in V/cm
-
+%FrontGate = [-0.25, -0.20, -0.15, -0.10, -0.05, 0, 0.05, 0.10, 0.15, 0.20, 0.25] % array in eV
+%BackGate = [] 
 
 %3E11 ZOOM SETTINGS
-%Pot = [-0.6, -0.55, -0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0] % array in eV
-%Field = [20000, 18500, 16500, 15000, 13500, 11500, 10000] % array in V/cm
+%FrontGate = [-0.6, -0.55, -0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0] % array in eV
+%BackGate = []
 
 
-%Please insert desired filenames for output graphs to be saved under
+%%%%Please insert desired filenames for output graphs to be saved under%%%%
 filename1 = sprintf("%5.3GOccupation.png", abs(Dopant));  %Subband Occupation Graph filename, remove "-" from front
 filename2 = sprintf("%5.3GEqui_Density.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from front
 
-%Convert field from V/cm to V/A
-%Field = Field*(1E-8);
 
 
 %%%%%%%%%%%%%%%%  PERFORM CALCULATIONS  %%%%%%%%%%%%%%%%%%%%%
-Data = calcbands(Dopant, Field, Pot); %Run simulation
+Data = calcbands(Dopant, Backgate, Frontgate); %Run simulation
 
-
-%%%Optional: save the final iteration graph which shows conduction band,
+%{
+%Optional: save the final iteration graph which shows conduction band,
 %carrier density, and wavefunctions of lowest 2 subbands
-%filename = ''
-%saveas(gcf, '')
+filename = ''
+saveas(gcf, '')
+%}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
 %Calculate which subbands are occupied
-subband_occ = zeros([length(Field), length(Pot)]);
-for i = 1:length(Field)
-    for j = 1:length(Pot)
+subband_occ = zeros([length(BackGate), length(FrontGate)]);
+for i = 1:length(BackGate)
+    for j = 1:length(FrontGate)
         subband_occ(i,j) = (Data.Sub1.Occ(i,j) + Data.Sub2.Occ(i,j) + Data.Sub3.Occ(i,j));
     end
 end
@@ -105,7 +103,7 @@ hold off
 %%%% Plot a color map of electron density in QW as a function of gate voltage  %%%%
 figure
 
-contourf(Data.Vbot, Data.Vtop, Data.Well.Conc, "ShowText", true, "LabelFormat", "%0.3G")
+contourf(Data.Vbot, Data.Vtop, Data.WellConc, "ShowText", true, "LabelFormat", "%0.3G")
 xlabel("V_b_o_t (V)")
 ylabel("V_t_o_p (V)")
 xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
@@ -114,7 +112,7 @@ title("Carrier Concentration (cm^-^2)")
 
 
 %{
-scatter(Data.Vtop, Data.Well.Conc, "filled")
+scatter(Data.Vtop, Data.WellConc, "filled")
 xlabel("V_t_o_p (V)")
 ylabel("n (cm^-2)")
 %xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
@@ -123,7 +121,7 @@ title("Carrier Concentration VS Top Gate Bias")
 %}
 
 %{
-scatter(Data.Vbot, Data.Well.Conc, "filled")
+scatter(Data.Vbot, Data.WellConc, "filled")
 xlabel("V_b_o_t (V)")
 ylabel("n (cm^-2)")
 %xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
