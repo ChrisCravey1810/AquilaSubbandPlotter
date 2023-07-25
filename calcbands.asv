@@ -76,12 +76,12 @@ for i = 1:l_BG
 
 
 
-
+                                               
         %%%%%Prof. Grayson Degeneracy Cooler Structure%%%%%%% 
-        %%%%%Similar to device HS1 https://doi.org/10.1063/1.4945090%%%%
+        %%%%%Based on device HS1 https://doi.org/10.1063/1.4945090%%%%
 
 %{        
-        add_mbox(1000,20,0,0);                  %1000 A GaAs Cap (surface)
+        add_mbox(1000,20,0,0);                  %1000 A GaAs Cap
         add_mbox(1350,50,0.328,0);              %1350 A AlGaAs
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
         add_mbox(2,1,0.328,DeltaDop);           %2 A delta-doped AlGaAs
@@ -113,8 +113,8 @@ for i = 1:l_BG
 
 
         %%%%% ETH Bottom Gate Experimental Comparison Structure %%%%%%%%
-        %%%%%Based on device HS1 https://doi.org/10.1063/1.4945090%%%%
-        add_mbox(100,50,0.0,0);                %100 A GaAs (surface)
+        
+        add_mbox(100,50,0.0,0);                %100 A GaAs
         add_mbox(2000,10,0.328,0);             %2000 A AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
         add_mbox(2,1,0.328,DeltaDop);          %2 A delta-doped AlGaAs
@@ -146,9 +146,9 @@ for i = 1:l_BG
 
 
 %{
-        %%%%%%% ETH TOP GATE COMPARISON STRUCTURE D170301B  %%%%%%%%%
+        %%%%%%% ETH TOP GATE COMPARISON STRUCTURE D170301B%%%%%%%%%
 
-        add_mbox(100,50,0.0,0);                %100 A GaAs (Surface)
+        add_mbox(100,50,0.0,0);                %100 A GaAs
         add_mbox(400,10,0.328,0);              %400 A AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
         add_mbox(2,1,0.328,DeltaDop);          %2 A delta-doped AlGaAs
@@ -174,10 +174,6 @@ for i = 1:l_BG
 %}
 
         
-
-
-
-
 
         runstructure;                          %%%%Perform Simulation%%%%%
         

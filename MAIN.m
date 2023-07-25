@@ -15,7 +15,7 @@ written by Dr. Martin Rother,  martin.rother@web.de
 %BackGate: Back gate values to be iterated over (array)
 
 Dopant = -4.4E11; 
-FrontGate = 0;
+FrontGate = [-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5];
 BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
 
 
@@ -33,22 +33,22 @@ BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
 %2.5E11 ZOOM SETTINGS
 %Dopant = -2.5E11;
 %FrontGate = [-0.25, -0.20, -0.15, -0.10, -0.05, 0, 0.05, 0.10, 0.15, 0.20, 0.25] % array in eV
-%BackGate = [] 
+%BackGate = [-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2] 
 
 %3E11 ZOOM SETTINGS
 %Dopant = -3E11;
-%FrontGate = [-0.6, -0.55, -0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0] % array in eV
-%BackGate = []
+%FrontGate = [-0.6, -0.55, -0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0]; % array in eV
+%BackGate = [-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2];
 
 
 %ETH Top Gate Compare
 %Dopant = -1.07E12;
 %FrontGate = [0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0, -0.1, -0.2, -0.3];
-%BackGate = 0;
+%BackGate = [0];
 
 %ETH Bottom Gate Compare
 %Dopant = -4.4E11; 
-%FrontGate = 0;
+%FrontGate = [0];
 %BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
 
 
@@ -92,7 +92,7 @@ colormap cool; %Make the plot look nice:
 %0 subbands occupied = Light Blue
 
 
-%{
+
 
 %%%%  Plot subbands occupancy  %%%%
 %Spread the matrix data into vectors so they may be plotted easily
@@ -118,7 +118,7 @@ lgd = legend;
 lgd.Title.String = "# of Occupied Subbands";
 hold off
 
-%saveas(gcf, filename1)
+saveas(gcf, filename1)
 
 
 
@@ -264,7 +264,7 @@ legend(["NU Simulation", "ETH"]);
 
 
 %%Plot carrier conc VS bottom gate potential
-
+%{
 figure
 
 scatter(Data.Vbot, Data.WellConc, "filled", "blue");
@@ -279,6 +279,7 @@ hold on;
 scatter([-2.5, 0, 2], [-1.8E11, -2.9E11, -3.7E11], "filled", "red");
 legend(["NU Simulation", "ETH"]);
 
+%}
 
 
 
