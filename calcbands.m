@@ -1,4 +1,13 @@
 function Data = calcbands(DeltaDop, BackGate, FrontGate)
+
+%{
+Calcbands and MAIN written by Christopher Cravey
+christopheracravey@gmail.com
+Northwestern University, Prof. Matthew Grayson lab 2023
+All other code original to Aquila Subband Plotter
+written by Dr. Martin Rother,  martin.rother@web.de
+%}
+
 % Calculate which subbands are occupied for variety of boundary conditions
 % Quantum well structure is hard coded into this function, must manually
 % change any structure properties by altering this code, but the passable
@@ -47,7 +56,7 @@ disp("Doping conc. on each side is: "+ DeltaDop + " cm^-3")
 
 
 
-%How large are the arrays passed through for BackGate and FrontGate arguments?
+%How large are the arrays passed throdugh for BackGate and FrontGate arguments?
 l_BG = length(BackGate);
 l_FG = length(FrontGate);
 
@@ -67,8 +76,9 @@ for i = 1:l_BG
 
 
         %%%%%Prof. Grayson Degeneracy Cooler Structure%%%%%%% 
+        %%%%%Based on device HS1 https://doi.org/10.1063/1.4945090%%%%
 
-        
+%{        
         add_mbox(1000,20,0,0);                  %1000 A GaAs Cap
         add_mbox(1350,50,0.328,0);              %1350 A AlGaAs
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
@@ -97,11 +107,11 @@ for i = 1:l_BG
         add_bias([14000, 16000], BackGate(i));       %Set bottom gate potential
         add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
         add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
-
+%}
 
 
         %%%%% ETH Bottom Gate Experimental Comparison Structure %%%%%%%%
-%{        
+        
         add_mbox(100,50,0.0,0);                %100 A GaAs
         add_mbox(2000,10,0.328,0);             %2000 A AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
@@ -131,11 +141,11 @@ for i = 1:l_BG
 
         add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
         add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
-%}
 
 
-        %%%%%%% ETH TOP GATE COMPARISON STRUCTURE %%%%%%%%%
 %{
+        %%%%%%% ETH TOP GATE COMPARISON STRUCTURE D170301B%%%%%%%%%
+
         add_mbox(100,50,0.0,0);                %100 A GaAs
         add_mbox(400,10,0.328,0);              %400 A AlGaAs
         add_mbox(2,1,0.328,0);                 %2 A AlGaAs to increase grid resolution
