@@ -14,9 +14,9 @@ written by Dr. Martin Rother,  martin.rother@web.de
 %FrontGate: Front gate values to be iterated over (array)
 %BackGate: Back gate values to be iterated over (array)
 
-Dopant = -4.4E11; 
-FrontGate = [-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5];
-BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
+Dopant = -2E11;
+FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
 
 
@@ -47,7 +47,7 @@ BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
 %BackGate = [0];
 
 %ETH Bottom Gate Compare
-%Dopant = -4.4E11; 
+%Dopant = -4.37E11; 
 %FrontGate = [0];
 %BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
 
@@ -95,6 +95,7 @@ colormap cool; %Make the plot look nice:
 
 
 %%%%  Plot subbands occupancy  %%%%
+
 %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(:), 'filled')
 xlabel("V_b_o_t (V)")
@@ -118,7 +119,7 @@ lgd = legend;
 lgd.Title.String = "# of Occupied Subbands";
 hold off
 
-saveas(gcf, filename1)
+%saveas(gcf, filename1)
 
 
 
@@ -137,7 +138,7 @@ title("Carrier Concentration (cm^-^2)")
 
 %saveas(gcf, filename2)
 
-%}
+
 
 
 
@@ -274,7 +275,7 @@ ylabel("n (cm^-2)");
 %ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
 title("Carrier Concentration VS Bottom Gate Bias");
 
-%Plot back gate eth experimental results
+%Plot back gate ETH experimental results
 hold on;
 scatter([-2.5, 0, 2], [-1.8E11, -2.9E11, -3.7E11], "filled", "red");
 legend(["NU Simulation", "ETH"]);
