@@ -16,14 +16,17 @@ written by Dr. Martin Rother,  martin.rother@web.de
 
 Dopant = -2E11;
 FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+BackGate = [ -0.2, -0.1, 1.1, 1.2]
 
-%Test added note
+%FrontGate = [0.04, 0.05, 0.06, 0.07, 0.08, 0.09  0.1,  0.11, 0.12];
+%BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2];
+
+
 
 
 %GLOBAL SETTINGS
-%BackGate = [2, 1.75, 1.5, 1.25, 1.0, 0.75, 0.50, 0.25, 0, -0.25, -0.5, -0.75, -1, -1.25, -1.5, -1.75, -2] 
-%FrontGate = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1]
+%BackGate = [2, 1.75, 1.5, 1.25, 1.0, 0.75, 0.50, 0.25, 0, -0.25, -0.5, -0.75, -1, -1.25, -1.5, -1.75, -2];
+%FrontGate = [1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1];
 
 
 %2E11 ZOOM SETTINGS
@@ -135,6 +138,32 @@ ylabel("V_t_o_p (V)")
 xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
 title("Carrier Concentration (cm^-^2)")
+
+
+%plot red line of sub-band degeneracy crossover
+%hold on
+%plot([-0.18, 1.2], [0.108, 0.07], 'LineWidth', 2, 'Color', 'r')
+
+
+%plot green line of sub-band degeneracy crossover +- 3KbT
+global aquila_control
+Boltz = 8.61733E-5;   %Boltzmann Constant in eV/K
+KBT = (Boltz)*aquila_control.T;    %Calculate Thermal Energy
+%Ef at 1k = -0.758724489795918
+%Ef at 4.2k = -0.759596271186441
+%Ef at 10k = -0.761189486552567
+%Subband 1 at 1k =  -0.7647
+%Subband 1 at 10k = -0.76714
+%Subband 2 at 1k =  -0.755607
+%Subband 2 at 10k = -0.75808
+
+%Change in Ef 0.0024649
+%Change in Subband 1:  0.00246
+%Change in subband 2: 0.00247
+
+
+%plot([-0.18, 1.2], [0.108 + (3 * KBT), 0.0608 + (3 * KBT)], 'LineWidth', 2, 'Color', 'g')
+%plot([-0.18, 1.2], [0.108 - (3 * KBT), 0.0608 - (3 * KBT)], 'LineWidth', 2, 'Color', 'g')
 
 
 %saveas(gcf, filename2)

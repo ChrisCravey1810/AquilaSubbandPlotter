@@ -1,5 +1,6 @@
 function Data = calcbands(DeltaDop, BackGate, FrontGate)
 
+global aquila_control
 %{
 Calcbands and MAIN written by Christopher Cravey
 christopheracravey@gmail.com
@@ -203,6 +204,7 @@ for i = 1:l_BG
         
         
         %Calculate if subband energy is above fermi energy
+        %{
         if (aquila_subbands.ge(1).E(1) - aquila_control.Efermi) < 0
             Data.Sub1.Occ(i,j) = 1; 
         end
@@ -212,8 +214,22 @@ for i = 1:l_BG
         if (aquila_subbands.ge(1).E(3) - aquila_control.Efermi) < 0
             Data.Sub3.Occ(i,j) = 1; 
         end
+        %}
         
-        
+        Therm = 3;
+        Boltz = 8.61733E-5;   %Boltzmann Constant in eV/K
+        %KBT = (Boltz)*aquila_control.T;    %Calculate Thermal Energy
+        KBT = (Boltz)*4.0  % ~3.45E-4 eV
+        if (aquila_subbands.ge(1).E(1) + (Therm*KBT) - aquila_control.Efermi) < 0
+            Data.Sub1.Occ(i,j) = 1; 
+        end
+        if (aquila_subbands.ge(1).E(2) + (Therm*KBT) - aquila_control.Efermi) < 0
+            Data.Sub2.Occ(i,j) = 1;
+        end
+        if (aquila_subbands.ge(1).E(3) + (Therm*KBT) - aquila_control.Efermi) < 0
+            Data.Sub3.Occ(i,j) = 1; 
+        end
+
 
         % How much charge is in the first and in the second subband
         chG=genqcharge(1,GE,1); %charge distribution for gamma electrons in the first subband
@@ -251,8 +267,7 @@ for i = 1:l_BG
 
 
         % What is the potential of the top and bottom gate?
-        %Data.Vbot(i,j) = (-0.71313 - aquila_material.ec(end) + phi(end));
-        Data.Vbot(i,j) = (-0.7424 - aquila_material.ec(end) + phi(end));
+        Data.Vbot(i,j) = (aquila_control.Efermi - aquila_material.ec(end) + phi(end));
         Data.Vtop(i,j) = (phi(1) - aquila_material.ec(1));
 
 

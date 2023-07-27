@@ -45,7 +45,7 @@ aquila_control.periodic=0;
 aquila_control.verbose=0;
 
 %predefine temperature, Fermi energy and carrier types
-aquila_control.T=4.2;
+aquila_control.T=1.0;
 aquila_control.Efermi=-0.5*(1.519-5.405e-4*aquila_control.T^2 /(aquila_control.T+204));
 aquila_control.carriers=GE;
 
