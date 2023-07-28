@@ -320,6 +320,6 @@ plot([aquila_subbands.structure(1).xpos(end-100),aquila_subbands.structure(1).xp
 xlabel("Distance (A)")
 ylabel("Energy (eV)")
 legend('','','Subbands', 'Efermi', '+-3K_bT')
-title("Subband Energies, T = " + T  + "K   V_t_o_p = " + FrontGate + "V   V_b_o_t = " + BackGate + "V");
+title("Subband Energies, T = ", 12, "Vbot = ", BackGate);
 
 end
