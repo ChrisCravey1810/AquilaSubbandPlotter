@@ -331,7 +331,7 @@ figure
 plot(aquila_subbands.structure(1).xpos, cb); %Plot Conduction Band
 hold on
 w = length(aquila_subbands.structure(1).xpos);
-ylim([min(cb), aquila_subbands.ge.E(3) + 0.02]); %Set y-axis limits to be more zoomed in on subbands
+ylim([aquila_subbands.ge.E(1)- 0.005, aquila_subbands.ge.E(3) + 0.001]); %Set y-axis limits to be more zoomed in on subbands
 plot(aquila_subbands.structure(1).xpos, ones(w,1)*aquila_control.Efermi); %Graph fermi energy
 %Graph Subband Energies
 plot(aquila_subbands.structure(1).xpos, ones(w,1)*aquila_subbands.ge.E(1), 'Color', 'g', 'LineWidth', 1);
