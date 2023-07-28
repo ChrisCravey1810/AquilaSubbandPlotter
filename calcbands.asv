@@ -301,9 +301,7 @@ for i = 1:l_BG
 
     end
 end
-
-
-%%%%%%Plot the Wavefunctions of the bottom 2 bands%%%%%
+%Plot the Wavefunctions of the bottom 2 bands
 %We only have gamma electrons in one QBOX, this is, what the ge(1) stand for.
 %We have to square the wavefunctions to get the probability distribution.
 l=length(aquila_subbands.structure(1).xpos); %the size of one wavefunction
@@ -324,13 +322,14 @@ fi = find(aquila_structure.xpos == aquila_subbands.structure(1).xpos(1));
 li = find(aquila_structure.xpos == aquila_subbands.structure(1).xpos(end));
 %Calculate conduction band in our quantum well
 cb= aquila_material.ec(fi:li)-phi(fi:li);
+w = length(aquila_subbands.structure(1).xpos);
 
+%dg = [6,50,12]/256 %Dark Green RGB values
 
 
 figure
 plot(aquila_subbands.structure(1).xpos, cb); %Plot Conduction Band
 hold on
-w = length(aquila_subbands.structure(1).xpos);
 ylim([min(cb), aquila_subbands.ge.E(3) + 0.02]); %Set y-axis limits to be more zoomed in on subbands
 plot(aquila_subbands.structure(1).xpos, ones(w,1)*aquila_control.Efermi); %Graph fermi energy
 %Graph Subband Energies
