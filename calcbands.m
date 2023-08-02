@@ -105,14 +105,16 @@ for i = 1:l_BG
         add_mbox(300, 50, 0, 0);                %300A GaAs cap 
 
         
-        add_bias([500, 3000], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
-        add_bias([4000, 14000], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
-        add_qbox([3100 3850],5,3, GE +XE + LE);      %set quantum box onto quantum well
-        add_pbox([3100 3850],CB);                    %Graph charge density in well
+        add_bias([0,500], FrontGate(j));
+        add_bias([500, 3130], 20);                    %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([3880, 14150], 20);                  %Make fermi energy between bottom gate and QW pinned to mid gap
+        add_qbox([3130 3850],5,3, GE +XE + LE);      %set quantum box onto quantum well
+        add_pbox([3130 3850],CB);                    %Graph charge density in well
         add_pbox([0 15600],CB);                      %Graph charge density throughout structure
 
-        add_bias([14000, 16000], BackGate(i));       %Set bottom gate potential
-        add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
+        add_bias([14150, 16000], BackGate(i));       %Set bottom gate potential
+        %add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
+        add_boundary(LEFT, POTENTIAL, 0);
         add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
 
 
@@ -212,11 +214,11 @@ for i = 1:l_BG
         Kb = 8.61733E-5;   %Boltzmann Constant in eV/K
         T = 4;  %The termperature used to calculate THERMAL BROADENING ONLY
                 %to change the environmental temperature, see initaquila.
-        Broadening = [];  %Array: For each element "a", the simulation will
+        Broadening = [3, -3];  %Array: For each element "a", the simulation will
                           %add a*Kb*T to the fermi level then calculate
-                          %which subbands are occupied.
-                          
+                          %which subbands are occupied. 
                            
+
 
         %Calculate subband occupation
         %Start with no thermal broadening considerations (Broad = 0), 
@@ -319,6 +321,7 @@ plot(aquila_subbands.structure(1).xpos,[aquila_subbands.ge(1).psi(1:l)' ...
 
 %%%%Plot subband energies, the fermi energy, and thermal broadening%%%%%%
 
+%{
 %Find the slice of xpos array which corresponds to our quantum well qbox
 fi = find(aquila_structure.xpos == aquila_subbands.structure(1).xpos(1));
 li = find(aquila_structure.xpos == aquila_subbands.structure(1).xpos(end));
@@ -345,5 +348,5 @@ xlabel("Distance (A)");
 ylabel("Energy (eV)");
 title("T = " + T  + "K   V_t_o_p = " + FrontGate + "V   V_b_o_t = " + BackGate + "V");
 hold off
-
+%}
 end
