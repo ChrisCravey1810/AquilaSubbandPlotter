@@ -15,8 +15,9 @@ written by Dr. Martin Rother,  martin.rother@web.de
 %BackGate: Back gate values to be iterated over (array)
 
 Dopant = -2E11;
-BackGate = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
-FrontGate = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
+BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+
 
 
 
@@ -52,74 +53,83 @@ FrontGate = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
 %BackGate = [-2.5, -2, -1.5, -1, -0.5, -0, 0.5, 1, 1.5, 2];
 
 
+D = sprintf('%5.3G', Dopant);  %Express doping conc. in scientific notation
+                               %for use in titles/filenames
+
 
 %%%%Please insert desired filenames for output graphs to be saved under%%%%
-filename1 = sprintf("%5.3GOccGlobal.png", abs(Dopant));  %Subband Occupation Graph filename, remove "-" from front
-filename2 = sprintf("%5.3GConcGlobal.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from front
+filename1 = sprintf("%5.3GOccGlobal.png", abs(Dopant));  %Subband Occupation Graph filename, removes "-" from conc.
+filename2 = sprintf("%5.3GOccP3KbT.png", abs(Dopant)); %Subband Occupation with +3KbT Graph filename, removes "-" from conc.
+filename3 = sprintf("%5.3GOccM3KbT.png", abs(Dopant)); %Subband Occupation with -3KbT Graph filename, removes "-" from conc.
+filename4 = sprintf("%5.3GConc.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from conc.
 
 
 
 %%%%%%%%%%%%%%%%  PERFORM CALCULATIONS  %%%%%%%%%%%%%%%%%%%%%
 Data = calcbands(Dopant, BackGate, FrontGate); %Run simulation
 
-%{
-%Optional: save the final iteration graph which shows conduction band,
-%carrier density, and wavefunctions of lowest 2 subbands
-filename = ''
-saveas(gcf, '')
-%}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
 %Calculate Total # of subbands occupied for each iteration
-subband_occ = zeros([length(BackGate), length(FrontGate)]);
-for i = 1:length(BackGate)
-    for j = 1:length(FrontGate)
-        subband_occ(i,j) = (Data.Sub1.Occ(i,j) + Data.Sub2.Occ(i,j) + Data.Sub3.Occ(i,j));
-    end
-end
-
-
-
-figure %Create new graph window
-
-colormap cool; %Make the plot look nice:
-%3 subbands occupied = ?
-%2 subbands occupied = Pink 
-%1 subbands occupied = Purple
-%0 subbands occupied = Light Blue
-
+subband_occ = Data.Sub1.Occ + Data.Sub2.Occ + Data.Sub3.Occ;
 
 
 
 %%%%  Plot subbands occupancy  %%%%
 
-%Spread the matrix data into vectors so they may be plotted easily
-scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(:), 'filled')
-xlabel("V_b_o_t (V)")
-ylabel("V_t_o_p (V)")
-xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
-ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
-D = sprintf('%5.3G', Dopant);  %Express doping conc. in scientific notation
-                      
-title("Delta Doping: " + D)
+colormap cool; %Make the plot look nice:
+%3 subbands occupied = Pink
+%2 subbands occupied = Purple
+%1 subbands occupied = Blue
+%0 subbands occupied = Light Blue
 
 
-%Create some invisable points to easily make 
-%a constant legend for the scatter plot
-hold on
-h=gobjects(3,1);
-h(1)=scatter(nan,nan, [], 0,'filled');
-h(2)=scatter(nan,nan,[], 1,'filled');
-h(3)=scatter(nan,nan,[], 2,'filled');
-legend(h, ["0" "1" "2"])
-lgd = legend;
-lgd.Title.String = "# of Occupied Subbands";
-hold off
+%Calculate total number of data point for a given sweep
+n = numel(Data.Sub1.Occ(:,:,1));
+
+%%%Plot Subband Crossover (No Thermal Broadening)
+
+figure %Create new graph window
+
+    %Spread the matrix data into vectors so they may be plotted easily
+scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ( 1:n), 'filled')
+PrettyPlot(Data.Vbot, Data.Vtop);
+title("Delta Doping: " + D);
 
 %saveas(gcf, filename1)
+
+
+
+%%%Plot Subband Crossover (+ 3KbT)
+    %Spread the matrix data into vectors so they may be plotted easily
+figure %Create new graph window
+
+    %Spread the matrix data into vectors so they may be plotted easily
+scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(n+1 : 2*n), 'filled')
+PrettyPlot(Data.Vbot, Data.Vtop);
+title("Delta Doping: " + D + " +3KbT");
+
+%saveas(gcf, filename2)
+
+
+
+
+%%%Plot Subband Crossover (- 3KbT)
+    %Spread the matrix data into vectors so they may be plotted easily
+figure %Create new graph window
+
+    %Spread the matrix data into vectors so they may be plotted easily
+scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(2*n+1 : 3*n), 'filled')
+PrettyPlot(Data.Vbot, Data.Vtop);
+title("Delta Doping: " + D + " -3KbT");
+
+
+%saveas(gcf, filename3)
+
+
+
 
 
 
@@ -136,38 +146,15 @@ ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
 title("Carrier Concentration (cm^-^2)")
 
 
-%plot red line of sub-band degeneracy crossover
-%hold on
-%plot([-0.18, 1.2], [0.108, 0.07], 'LineWidth', 2, 'Color', 'r')
-
-
-%plot green line of sub-band degeneracy crossover +- 3KbT
-global aquila_control
-Boltz = 8.61733E-5;   %Boltzmann Constant in eV/K
-KBT = (Boltz)*aquila_control.T;    %Calculate Thermal Energy
-%Ef at 1k = -0.758724489795918
-%Ef at 4.2k = -0.759596271186441
-%Ef at 10k = -0.761189486552567
-%Subband 1 at 1k =  -0.7647
-%Subband 1 at 10k = -0.76714
-%Subband 2 at 1k =  -0.755607
-%Subband 2 at 10k = -0.75808
-
-%Change in Ef 0.0024649
-%Change in Subband 1:  0.00246
-%Change in subband 2: 0.00247
-
-
-
-%saveas(gcf, filename2)
+%saveas(gcf, filename4)
 
 
 
 
 
+
+%%%%%%  Plot carrier conc VS top gate potential  %%%%%%
 %{
-%%Plot carrier conc VS top gate potential
-
 figure
 
 scatter(Data.Vtop, -1 * Data.WellConc, "filled", "blue")
@@ -287,7 +274,7 @@ legend(["NU Simulation", "ETH"]);
 
 
 
-%%Plot carrier conc VS bottom gate potential
+%%%%  Plot carrier conc VS bottom gate potential  %%%%%%
 %{
 figure
 
@@ -305,5 +292,36 @@ legend(["NU Simulation", "ETH"]);
 
 %}
 
+
+function PrettyPlot(Vbot, Vtop)
+    hold on
+
+    colormap cool; %Make the plot look nice:
+    %3 subbands occupied = Pink
+    %2 subbands occupied = Purple
+    %1 subbands occupied = Blue
+    %0 subbands occupied = Light Blue
+
+
+    %Create some invisable points to easily make 
+    %a constant legend for the scatter plot
+
+    h=gobjects(4,1);
+    h(1)=scatter(nan,nan, [], 0,'filled');
+    h(2)=scatter(nan,nan,[], 1,'filled');
+    h(3)=scatter(nan,nan,[], 2,'filled');
+    h(4)=scatter(nan,nan,[], 3,'filled');
+    
+    legend(h, ["0" "1" "2" "3"])
+    lgd = legend;
+    lgd.Title.String = "# of Occupied Subbands";
+    hold off
+
+    %Add standard axis labels and limits for scatter plot
+    xlabel("V_b_o_t (V)")
+    ylabel("V_t_o_p (V)")
+    xlim([min(Vbot, [], "all") max(Vbot, [], "all")])
+    ylim([min(Vtop, [], "all") max(Vtop, [], "all")])
+end
 
 
