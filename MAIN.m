@@ -15,8 +15,10 @@ written by Dr. Martin Rother,  martin.rother@web.de
 %BackGate: Back gate values to be iterated over (array)
 
 Dopant = -2E11;
-FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
-BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+FrontGate = linspace(-0.2, 0.6, 13);
+BackGate = linspace(0.5, 2, 13);
+%FrontGate = [2.2];
+%BackGate = [1];
 
 
 
@@ -30,6 +32,9 @@ BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 %Dopant = -2E11;
 %FrontGate = [ 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
 %BackGate = [ -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+%FrontGate = linspace(-0.2, 1.6, 20);
+%BackGate = linspace(-4, 2, 20);
+
 
 %2.5E11 ZOOM SETTINGS
 %Dopant = -2.5E11;
@@ -58,10 +63,10 @@ D = sprintf('%5.3G', Dopant);  %Express doping conc. in scientific notation
 
 
 %%%%Please insert desired filenames for output graphs to be saved under%%%%
-filename1 = sprintf("%5.3GOccGlobal.png", abs(Dopant));  %Subband Occupation Graph filename, removes "-" from conc.
-filename2 = sprintf("%5.3GOccP3KbT.png", abs(Dopant)); %Subband Occupation with +3KbT Graph filename, removes "-" from conc.
-filename3 = sprintf("%5.3GOccM3KbT.png", abs(Dopant)); %Subband Occupation with -3KbT Graph filename, removes "-" from conc.
-filename4 = sprintf("%5.3GConc.png", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from conc.
+filename1 = sprintf("25nmScatter");  %Subband Occupation Graph filename, removes "-" from conc.
+filename2 = sprintf("25nm+3KbT"); %Subband Occupation with +3KbT Graph filename, removes "-" from conc.
+filename3 = sprintf("25nm-3KbT"); %Subband Occupation with -3KbT Graph filename, removes "-" from conc.
+filename4 = sprintf("%5.3GConc", abs(Dopant)); %Equi-Electron Density Graph filename, remove "-" from conc.
 
 
 
@@ -96,7 +101,8 @@ figure %Create new graph window
     %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ( 1:n), 'filled')
 PrettyPlot(Data.Vbot, Data.Vtop);
-title("Delta Doping: " + D);
+title("65nm QW");
+
 
 %saveas(gcf, filename1)
 
@@ -109,7 +115,7 @@ figure %Create new graph window
     %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(n+1 : 2*n), 'filled')
 PrettyPlot(Data.Vbot, Data.Vtop);
-title("Delta Doping: " + D + " +3KbT");
+title("35nm QW +3KbT");
 
 %saveas(gcf, filename2)
 
@@ -123,7 +129,7 @@ figure %Create new graph window
     %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(2*n+1 : 3*n), 'filled')
 PrettyPlot(Data.Vbot, Data.Vtop);
-title("Delta Doping: " + D + " -3KbT");
+title("35nm QW -3KbT");
 
 
 %saveas(gcf, filename3)
@@ -143,7 +149,7 @@ xlabel("V_b_o_t (V)")
 ylabel("V_t_o_p (V)")
 xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
-title("Carrier Concentration (cm^-^2)")
+title("QW Carrier Conc (cm^-^2)")
 
 
 %saveas(gcf, filename4)
@@ -318,8 +324,10 @@ function PrettyPlot(Vbot, Vtop)
     hold off
 
     %Add standard axis labels and limits for scatter plot
-    xlabel("V_b_o_t (V)")
-    ylabel("V_t_o_p (V)")
+    xlabel("Back Gate (V)")
+    ylabel("Front Gate (V)")
+    %xlim([-4, 2])
+    %ylim([-0.2, 1.6])
     xlim([min(Vbot, [], "all") max(Vbot, [], "all")])
     ylim([min(Vtop, [], "all") max(Vtop, [], "all")])
 end

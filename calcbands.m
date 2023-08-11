@@ -106,13 +106,13 @@ for i = 1:l_BG
 
         
         add_bias([0,500], FrontGate(j));
-        add_bias([500, 3130], 20);                    %Make fermi energy between top gate and QW pinned to mid gap
-        add_bias([3880, 14150], 20);                  %Make fermi energy between bottom gate and QW pinned to mid gap
-        add_qbox([3130 3850],5,3, GE +XE + LE);      %set quantum box onto quantum well
-        add_pbox([3130 3850],CB);                    %Graph charge density in well
-        add_pbox([0 15600],CB);                      %Graph charge density throughout structure
+        add_bias([500, 3130], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([3850, 14200], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
+        add_qbox([3130 3840],5,3, GE +XE + LE);      %set quantum box onto quantum well
+        add_pbox([3130 3840],CB);                    %Graph charge density in well
+        add_pbox([0 15700],CB);                      %Graph charge density throughout structure
 
-        add_bias([14150, 16000], BackGate(i));       %Set bottom gate potential
+        add_bias([14200, 16000], BackGate(i));       %Set bottom gate potential
         %add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
         add_boundary(LEFT, POTENTIAL, 0);
         add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
@@ -185,7 +185,7 @@ for i = 1:l_BG
 
 
 
-
+        disp("FrontGate: " + FrontGate(j) + "   BackGate: " + BackGate(i));
         runstructure;                          %%%%Perform Simulation%%%%%
         
 
