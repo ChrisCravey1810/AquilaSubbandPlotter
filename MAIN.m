@@ -15,8 +15,11 @@ written by Dr. Martin Rother,  martin.rother@web.de
 %BackGate: Back gate values to be iterated over (array)
 
 Dopant = -2E11;
-FrontGate = linspace(-0.2, 0.6, 13);
-BackGate = linspace(0.5, 2, 13);
+FrontGate = [0];
+BackGate = [0];
+
+%FrontGate = linspace(-0.2, 0.6, 13);
+%BackGate = linspace(0.5, 2, 13);
 %FrontGate = [2.2];
 %BackGate = [1];
 

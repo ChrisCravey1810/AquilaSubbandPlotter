@@ -1,4 +1,4 @@
-function Data = calcbands(DeltaDop, BackGate, FrontGate)
+function Data = calcbands(DeltaDopF, DeltaDopB, BackGate, FrontGate)
 
 global aquila_control
 %{
@@ -54,10 +54,15 @@ written by Dr. Martin Rother,  martin.rother@web.de
 
 
 % Convert DeltaDop (cm^-2 to sheet doping cm^-3)
-DeltaDop = (DeltaDop/100)/(2E-10);  %/100 to convert to m, divide by 2 A 
+DeltaDopF = (DeltaDopF/100)/(2E-10);  %/100 to convert to m, divide by 2 A 
                                     % because the doping layer is 2A wide
-disp("Doping conc. on each side is: "+ DeltaDop + " cm^-3")
 
+disp("Front side doping conc. is: "+ DeltaDopF + " cm^-3")
+
+DeltaDopB = (DeltaDopB/100)/(2E-10);  %/100 to convert to m, divide by 2 A 
+                                    % because the doping layer is 2A wide
+
+disp("Back side doping conc. is: "+ DeltaDopB + " cm^-3")
 
 
 
@@ -85,19 +90,50 @@ for i = 1:l_BG
         %%%%%Prof. Grayson Degeneracy Cooler Structure%%%%%%% 
         %%%%%Similar to device HS1 https://doi.org/10.1063/1.4945090%%%%
 
+%{    
+%%%%   Symmetric QW Saturation for various barrier widths    %%%%%
+        
+
+        60nm Front Barrier:
+        54nm Back Barrier:
+            Front Side: -5E11 
+            Back Side:  -3E11
+            Well Conc:  -5.77E11
+        80nm Front Barrier:
+        73nm Back Barrier:
+            Front Side: -5.5E11 
+            Back Side:  -2.5E11
+            Well Conc:  -4.46E11
+        100nm Front Barrier:
+        92nm Back Barrier:
+            Front Side: -5E11 
+            Back Side:  -3E11
+            Well Conc:  -3.64E11
+        120nm Front Barrier:
+        110nm Back Barrier:
+            Front Side: ?E11 
+            Back Side:  ?E11
+            Well Conc:  -3.07E11
+        
+        
+
+%}
+
+        FBarr = 600;  %Front Barrier Width (A)
+        BBarr = 545; %Back Barrier Width (A)
         
         add_mbox(1000,20,0,0);                  %1000 A GaAs Cap (surface)
         add_mbox(1350,50,0.328,0);              %1350 A AlGaAs
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
-        add_mbox(2,1,0.328,DeltaDop);           %2 A delta-doped AlGaAs
+        add_mbox(2,1,0.328,DeltaDopF);           %2 A delta-doped AlGaAs
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs
-        add_mbox(800,20,0.328,0);               %800 A AlGaAs spacer
+        add_mbox(FBarr,20,0.328,0);               %800 A AlGaAs spacer
         
         add_mbox(650,5,0,0);                    %650 A GaAs quantum well
 
-        add_mbox(800,20,0.328,0);               %800 A AlGaAs spacer
+        add_mbox(BBarr,20,0.328,0);               %800 A AlGaAs spacer
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs
-        add_mbox(2,1,0.328, DeltaDop);          %2 A delta-doped AlGaAs
+        add_mbox(2,1,0.328, DeltaDopB);          %2 A delta-doped AlGaAs
         add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
         add_mbox(9700,100,0.328,0);             %9700 A AlGaAs
         add_mbox(300, 50, 0, 0);                %300A GaAs cap 
@@ -106,18 +142,18 @@ for i = 1:l_BG
 
         
         add_bias([0,500], FrontGate(j));
-        add_bias([500, 3130], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
-        add_bias([3850, 14200], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
-        add_qbox([3130 3840],5,3, GE +XE + LE);      %set quantum box onto quantum well
-        add_pbox([3130 3840],CB);                    %Graph charge density in well
+        add_bias([500, 2100], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([2400+1000+FBarr+BBarr, 14600], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
+        add_qbox([2250+FBarr, 2250+FBarr + 750],5,3, GE +XE + LE);      %set quantum box onto quantum well
+        add_pbox([1800, 4000 + FBarr + BBarr],CB);                    %Graph charge density in well
         add_pbox([0 15700],CB);                      %Graph charge density throughout structure
 
-        add_bias([14200, 16000], BackGate(i));       %Set bottom gate potential
+        add_bias([12400+650+FBarr+BBarr, 16000], BackGate(i));       %Set bottom gate potential
         %add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
         add_boundary(LEFT, POTENTIAL, 0);
         add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
 
-
+%3.6294e+11
 %{
         %%%%% ETH Bottom Gate Experimental Comparison Structure %%%%%%%%
         %%%%%Based on device HS1 https://doi.org/10.1063/1.4945090%%%%
