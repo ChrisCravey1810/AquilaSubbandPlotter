@@ -93,7 +93,7 @@ for i = 1:l_BG
 %{    
 %%%%   Symmetric QW Saturation for various barrier widths    %%%%%
         
-
+(((((0.326% Al)))))
         60nm Front Barrier:
         54nm Back Barrier:
             Front Side: -5E11 
@@ -101,8 +101,8 @@ for i = 1:l_BG
             Well Conc:  -5.77E11
         80nm Front Barrier:
         73nm Back Barrier:
-            Front Side: -5.5E11 
-            Back Side:  -2.5E11
+            Front Side: -5.0E11 
+            Back Side:  -2.2E11
             Well Conc:  -4.46E11
         100nm Front Barrier:
         92nm Back Barrier:
@@ -115,42 +115,72 @@ for i = 1:l_BG
             Back Side:  ?E11
             Well Conc:  -3.07E11
         
-        
 
+(((((0.25% Al)))))
+        60nm Front Barrier:
+        54nm Back Barrier:
+            Front Side: -5E11 
+            Back Side:  -2.7E11
+            Well Conc:  -4.64E11
+        80nm Front Barrier:
+        73nm Back Barrier:
+            Front Side: -5.5E11 
+            Back Side:  -2.5E11
+            Well Conc:  -3.60E11
+        100nm Front Barrier:
+        92nm Back Barrier:
+            Front Side: -4.5E11 
+            Back Side:  -2.2E11
+            Well Conc:  -2.93E11
+        120nm Front Barrier:
+        110nm Back Barrier:
+            Front Side: -4.3E11 
+            Back Side:  -1.9E11
+            Well Conc:  -2.49E11
+        140nm Front Barrier:
+        130nm Back Barrier:
+            Front Side: -4.1E11 
+            Back Side:  -1.3E11
+            Well Conc:  -2.14E11
+        
+        
 %}
 
-        FBarr = 600;  %Front Barrier Width (A)
-        BBarr = 545; %Back Barrier Width (A)
+        FBarr = 800;  %Front Barrier Width (A)
+        BBarr = 800; %Back Barrier Width (A)
         
         add_mbox(1000,20,0,0);                  %1000 A GaAs Cap (surface)
-        add_mbox(1350,50,0.328,0);              %1350 A AlGaAs
-        add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
-        add_mbox(2,1,0.328,DeltaDopF);           %2 A delta-doped AlGaAs
-        add_mbox(2,1,0.328,0);                  %2 A AlGaAs
-        add_mbox(FBarr,20,0.328,0);               %800 A AlGaAs spacer
+        add_mbox(1350,50,0.25,0);              %1350 A AlGaAs
+        add_mbox(2,1,0.25,0);                  %2 A AlGaAs to increase grid resolution
+        add_mbox(2,1,0.25,DeltaDopF);           %2 A delta-doped AlGaAs
+        add_mbox(2,1,0.25,0);                  %2 A AlGaAs
+        add_mbox(FBarr,20,0.25,0);               %800 A AlGaAs spacer
         
-        add_mbox(650,5,0,0);                    %650 A GaAs quantum well
+        QW = 750;
 
-        add_mbox(BBarr,20,0.328,0);               %800 A AlGaAs spacer
-        add_mbox(2,1,0.328,0);                  %2 A AlGaAs
-        add_mbox(2,1,0.328, DeltaDopB);          %2 A delta-doped AlGaAs
-        add_mbox(2,1,0.328,0);                  %2 A AlGaAs to increase grid resolution
-        add_mbox(9700,100,0.328,0);             %9700 A AlGaAs
+        add_mbox(QW,5,0,0);                    %650 A GaAs quantum well
+        
+        add_mbox(BBarr,20,0.25,0);               %800 A AlGaAs spacer
+        add_mbox(2,1,0.25,0);                  %2 A AlGaAs
+        add_mbox(2,1,0.25, DeltaDopB);          %2 A delta-doped AlGaAs
+        add_mbox(2,1,0.25,0);                  %2 A AlGaAs to increase grid resolution
+        add_mbox(9700,100,0.25,0);             %9700 A AlGaAs
         add_mbox(300, 50, 0, 0);                %300A GaAs cap 
         add_mbox(800, 10, 0.0, -7.5E17);        %bulk doped back gate
         add_mbox(300, 50, 0, 0);                %300A GaAs cap 
 
         
-        add_bias([0,500], FrontGate(j));
-        add_bias([500, 2100], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
-        add_bias([2400+1000+FBarr+BBarr, 14600], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
-        add_qbox([2250+FBarr, 2250+FBarr + 750],5,3, GE +XE + LE);      %set quantum box onto quantum well
+        
+        add_bias([500, 2100 + FBarr], 3);                    %Make fermi energy between top gate and QW pinned to mid gap
+        add_bias([2500 + FBarr + QW, 14800], 3);                  %Make fermi energy between bottom gate and QW pinned to mid gap
+        add_qbox([2250+FBarr, 2350+FBarr + QW],5,3, GE +XE + LE);      %set quantum box onto quantum well
         add_pbox([1800, 4000 + FBarr + BBarr],CB);                    %Graph charge density in well
         add_pbox([0 15700],CB);                      %Graph charge density throughout structure
 
-        add_bias([12400+650+FBarr+BBarr, 16000], BackGate(i));       %Set bottom gate potential
-        %add_boundary(LEFT,POTENTIAL, FrontGate(j));  %Set top gate potential
-        add_boundary(LEFT, POTENTIAL, 0);
+
+        add_bias([0,500], FrontGate(j));                             %Set front gate potential
+        add_bias([12200+QW+FBarr+BBarr, 16000], BackGate(i));       %Set bottom gate potential
+        add_boundary(LEFT, POTENTIAL, 0);            %Set Potential at surface = 0 (Bias is what creates front gate voltage)
         add_boundary(RIGHT, FIELD, 0);               %Set E field at the bulk of the device = 0
 
 %3.6294e+11

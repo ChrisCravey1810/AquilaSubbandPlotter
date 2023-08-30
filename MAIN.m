@@ -9,14 +9,14 @@ written by Dr. Martin Rother,  martin.rother@web.de
 %}
 
 
-%%%Please manually define desired parameters%%%
+%%%Please manually define desired parameters%%%  
 %Dopant: Delta doping amount in cm^-2 (double)
 %FrontGate: Front gate values to be iterated over (array)
 %BackGate: Back gate values to be iterated over (array)
 
 Dopant = -2E11;
-FrontGate = [0];
-BackGate = [0];
+FrontGate = [-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
+BackGate = [-4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
 
 %FrontGate = linspace(-0.2, 0.6, 13);
 %BackGate = linspace(0.5, 2, 13);
@@ -74,7 +74,7 @@ filename4 = sprintf("%5.3GConc", abs(Dopant)); %Equi-Electron Density Graph file
 
 
 %%%%%%%%%%%%%%%%  PERFORM CALCULATIONS  %%%%%%%%%%%%%%%%%%%%%
-Data = calcbands(Dopant, BackGate, FrontGate); %Run simulation
+Data = calcbands(Dopant, Dopant, BackGate, FrontGate); %Run simulation
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -104,7 +104,7 @@ figure %Create new graph window
     %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ( 1:n), 'filled')
 PrettyPlot(Data.Vbot, Data.Vtop);
-title("65nm QW");
+title("75nm QW 0.25Al");
 
 
 %saveas(gcf, filename1)
@@ -118,7 +118,7 @@ figure %Create new graph window
     %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(n+1 : 2*n), 'filled')
 PrettyPlot(Data.Vbot, Data.Vtop);
-title("35nm QW +3KbT");
+title("75nm QW +3KbT  0.25Al");
 
 %saveas(gcf, filename2)
 
@@ -132,7 +132,7 @@ figure %Create new graph window
     %Spread the matrix data into vectors so they may be plotted easily
 scatter(Data.Vbot(:), Data.Vtop(:), [], subband_occ(2*n+1 : 3*n), 'filled')
 PrettyPlot(Data.Vbot, Data.Vtop);
-title("35nm QW -3KbT");
+title("75nm QW -3KbT  0.25Al");
 
 
 %saveas(gcf, filename3)
@@ -148,8 +148,8 @@ title("35nm QW -3KbT");
 figure
 
 contourf(Data.Vbot, Data.Vtop, Data.WellConc, "ShowText", true, "LabelFormat", "%0.3G")
-xlabel("V_b_o_t (V)")
-ylabel("V_t_o_p (V)")
+xlabel("Back Gate (V)")
+ylabel("Front Gate (V)")
 xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
 title("QW Carrier Conc (cm^-^2)")
@@ -167,7 +167,7 @@ title("QW Carrier Conc (cm^-^2)")
 figure
 
 scatter(Data.Vtop, -1 * Data.WellConc, "filled", "blue")
-xlabel("V_t_o_p (V)")
+xlabel("Front Gate (V)")
 ylabel("n (cm^-2)")
 %xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 %ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
@@ -288,7 +288,7 @@ legend(["NU Simulation", "ETH"]);
 figure
 
 scatter(Data.Vbot, Data.WellConc, "filled", "blue");
-xlabel("V_b_o_t (V)");
+xlabel("Back Gate (V)");
 ylabel("n (cm^-2)");
 %xlim([min(Data.Vbot, [], "all") max(Data.Vbot, [], "all")])
 %ylim([min(Data.Vtop, [], "all") max(Data.Vtop, [], "all")])
